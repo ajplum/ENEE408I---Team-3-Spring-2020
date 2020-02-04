@@ -143,7 +143,7 @@ void driveACR(void *pvParameters) {
         // Check whether we should go left or right
         
         if((leftDistance > STOP_DISTANCE_SIDE) && (rightDistance > STOP_DISTANCE_SIDE)){ // if you see something in the middle and nothing 
-          // on the sides, go left and read again. But what if there's nothing on the side?
+          // on the sides, go left and read again. But what if there's nothing on the side? Base this on time of turn
           go_left();
         }
         if (leftDistance <= rightDistance) { // Right has more room than left, so go right. 
