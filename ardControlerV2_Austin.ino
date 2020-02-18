@@ -175,3 +175,56 @@ void driveACR(void *pvParameters) {
     vTaskDelay(50 / portTICK_PERIOD_MS);
   }
 }
+
+void updateOrders(void *pvParameters){ 
+  while(1) {
+    if(Serial.available() > 0) {
+      char incomingCharacter = Serial.read();
+      switch(incomingCharacter) {
+        case '\n': // Disregard newlines
+          break;
+        case 'f':
+          prevDir = currDir; 
+          currDir = forward;
+          lastCommandFromSerial = true;     
+          break;
+        case 'l':
+          prevDir = currDir; 
+          currDir = left;
+          lastCommandFromSerial = true;      
+          break;
+        case 'r':
+          prevDir = currDir;  
+          currDir = right;
+          lastCommandFromSerial = true;         
+          break;
+        case 'b': 
+          prevDir = currDir; 
+          currDir = backward;
+          lastCommandFromSerial = true;     
+          break;
+        case 'h': 
+          prevDir = currDir; 
+          currDir = halt;
+          lastCommandFromSerial = true;          
+          break;
+        case 'o': 
+          avoidObstaclesEnabled = true;  
+          break;
+        case 'z': 
+          avoidObstaclesEnabled = false; 
+          break;
+        case 'p':
+          followType = person;
+          break;
+        case 'a':
+          followType = april;
+          break;
+        default: 
+          Serial.println("ERROR: Bad Message from Serial - character was not expected"); 
+          break;
+      }
+    }
+    vTaskDelay(50/ portTICK_PERIOD_MS);
+  }
+}
