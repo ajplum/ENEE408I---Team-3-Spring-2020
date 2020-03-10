@@ -51,7 +51,7 @@ void setup() {
   Serial.begin(9600); // Set baud-rate
   xTaskCreate(driveACR,       (const portCHAR *) "Driving",         128, NULL, 1, NULL); // Priority 1
   xTaskCreate(updateOrders,   (const portCHAR *) "Updating Orders", 128, NULL, 2, NULL); // Priority 2
-  xTaskCreate(updatePingData, (const portCHAR *) "Updating Pings",  128, NULL, 2, NULL); // Priority 3
+  // xTaskCreate(updatePingData, (const portCHAR *) "Updating Pings",  128, NULL, 2, NULL); // Priority 3
   go_stop(); // Guarantee that both motors are not moving at start
 }
 
@@ -115,20 +115,20 @@ void updatePingData(void *pvParameters) {
 // Respond to directions
 void respondToCurrDir() {
   // Only need to act on the currDir value if it's different from the prevDir
-  if (currDir != prevDir) {
-    if (currDir == forward)
-      go_forward();
-    else if (currDir == left)
-      go_left();
-    else if (currDir == right)
-      go_right();
-    else if (currDir == backward)
-      go_backward();
-    else if (currDir == halt)
-      go_stop();
-    else
-      Serial.println("Error in respondToCurrDir() - currDir not found");
-  }
+//  if (currDir != prevDir) {
+//    if (currDir == forward)
+//      go_forward();
+//    else if (currDir == left)
+//      go_left();
+//    else if (currDir == right)
+//      go_right();
+//    else if (currDir == backward)
+//      go_backward();
+//    else if (currDir == halt)
+//      go_stop();
+//    else
+//      Serial.println("Error in respondToCurrDir() - currDir not found");
+//  }
 }
 
 void updateOrders(void *pvParameters){ 
@@ -141,30 +141,35 @@ void updateOrders(void *pvParameters){
         case 'f':
           prevDir = currDir; 
           currDir = forward;
+          go_forward();
           lastCommandFromSerial = true;  
           Serial.println("forward");   
           break;
         case 'l':
           prevDir = currDir; 
           currDir = left;
+          go_left();
           lastCommandFromSerial = true;  
           Serial.println("left");     
           break;
         case 'r':
           prevDir = currDir;  
           currDir = right;
+          go_right();
           lastCommandFromSerial = true; 
           Serial.println("right");         
           break;
         case 'b': 
           prevDir = currDir; 
           currDir = backward;
+          go_backward();
           lastCommandFromSerial = true; 
           Serial.println("back");     
           break;
         case 'h': 
           prevDir = currDir; 
           currDir = halt;
+          go_stop();
           lastCommandFromSerial = true; 
           Serial.println("halt");          
           break;
@@ -177,7 +182,7 @@ void updateOrders(void *pvParameters){
   }
 }
 
-// Drives the robot accoring to the last received order
+// Drives the robot according to the last received order
 void driveACR(void *pvParameters) {
   while(1) {
     if (dangerDetected == false) {
